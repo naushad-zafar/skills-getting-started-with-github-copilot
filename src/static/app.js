@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const response = await fetch("/activities");
       const activities = await response.json();
 
+      // Debug: log activities to verify structure
+      console.log("Fetched activities:", activities);
+
       // Clear loading message
       activitiesList.innerHTML = "";
 
@@ -20,11 +23,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const spotsLeft = details.max_participants - details.participants.length;
 
+        // Participants section
+        let participantsHTML = `
+          <div class="participants-section">
+            <h5>Participants</h5>
+            <ul class="participants-list">
+              ${
+                details.participants.length > 0
+                  ? details.participants
+                      .map(
+                        (participant) =>
+                          `<li title="${participant}">${participant}</li>`
+                      )
+                      .join("")
+                  : '<li style="color:#888;font-style:italic;">No participants yet</li>'
+              }
+            </ul>
+          </div>
+        `;
+
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          ${participantsHTML}
         `;
 
         activitiesList.appendChild(activityCard);
